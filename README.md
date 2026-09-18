@@ -41,163 +41,160 @@ Clean up the interval when the component unmounts using clearInterval to prevent
 ## PROGRAM
 App.jsx
 ```
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
-import image1 from "./assets/image1.jpg";
-import image2 from "./assets/image2.jpg";
-import image3 from "./assets/image3.jpg";
-
-function App() {
-  const images = [image1, image2, image3];
+const App = () => {
+  const images = [
+    { src: "https://images.unsplash.com/photo-1503919483171-9ffc1debc390?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1170", name: "Spring" },
+    { src: "https://images.unsplash.com/photo-1586902197503-e71026292412?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1172", name: "Summer" },
+    { src: "https://images.unsplash.com/photo-1501973801540-537f08ccae7b?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1172", name: "Autumn" },
+    { src: "https://images.unsplash.com/photo-1453306458620-5bbef13a5bca?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1170", name: "Winter" },
+    { src: "https://images.unsplash.com/photo-1619260584294-8a4e63f5ade5?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1170", name: "Monsoon" },
+  ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Next image
-  const nextImage = () => {
-    setCurrentIndex((currentIndex + 1) % images.length);
-  };
+  const nextImage = () => setCurrentIndex((prev) => (prev + 1) % images.length);
+  const prevImage = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
 
-  // Previous image
-  const previousImage = () => {
-    setCurrentIndex(
-      (currentIndex - 1 + images.length) % images.length
-    );
-  };
+  // Automatically change image every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(nextImage, 3000);
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
 
   return (
-    <div className="container">
-      <h1>Image Carousel</h1>
+    <div className="app-background">
+      <h1 className="heading">Image Carousel</h1>
+      <p className="tagline">Seasons Around the Year</p>
 
-      <div className="carousel">
-
-        <button className="prev" onClick={previousImage}>
-          ❮
-        </button>
-
+      <div className="carousel-container">
         <img
-          src={images[currentIndex]}
-          alt={`Slide ${currentIndex + 1}`}
+          src={images[currentIndex].src}
+          alt={images[currentIndex].name}
+          className="carousel-image"
         />
-
-        <button className="next" onClick={nextImage}>
-          ❯
-        </button>
-
+        <h3 className="image-name">{images[currentIndex].name}</h3>
+        <div className="button-group">
+          <button onClick={prevImage}>Previous</button>
+          <button onClick={nextImage}>Next</button>
+        </div>
       </div>
-
-      <div className="dots">
-        {images.map((_, index) => (
-          <span
-            key={index}
-            className={index === currentIndex ? "dot active" : "dot"}
-            onClick={() => setCurrentIndex(index)}
-          ></span>
-        ))}
-      </div>
-
-      <p>
-        Image {currentIndex + 1} of {images.length}
-      </p>
     </div>
   );
-}
+};
 
 export default App;
 ```
 App.css
 ```
-* {
-  box-sizing: border-box;
-}
-
-body {
+.app-background {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #da90c1a2);
+  font-family: 'Poppins', sans-serif;
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f2f2f2;
-}
-
-.container {
-  text-align: center;
-  padding: 40px;
-}
-
-h1 {
-  margin-bottom: 30px;
-}
-
-.carousel {
-  position: relative;
-  width: 700px;
-  max-width: 90%;
-  margin: auto;
   overflow: hidden;
+  
 }
 
-.carousel img {
-  width: 100%;
-  height: 400px;
+.heading {
+  color:black;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+  font-size: 2.5rem;
+  margin-bottom: 5px;
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+
+.tagline {
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 22px;
+  color: #fff8e1;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-container {
+  text-align: center;
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+  width: 650px;
+  transition: transform 0.3s ease;
+}
+
+.carousel-container:hover {
+  transform: scale(1.02);
+}
+
+.carousel-image {
+  width: 600px;
+  height: 300px;
+  border-radius: 15px;
   object-fit: cover;
-  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.image-name {
+  margin-top: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.button-group {
+  margin-top: 15px;
 }
 
 button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  border: none;
-  background: rgba(0, 0, 0, 0.6);
+  background-color: #4a90e2;
   color: white;
-  font-size: 30px;
+  border: none;
   padding: 10px 18px;
+  border-radius: 8px;
   cursor: pointer;
-  border-radius: 50%;
+  margin: 0 10px;
+  font-size: 15px;
+  transition: all 0.3s ease;
 }
 
 button:hover {
-  background: rgba(0, 0, 0, 0.9);
+  background-color: #357abd;
+  transform: scale(1.05);
 }
-
-.prev {
-  left: 15px;
-}
-
-.next {
-  right: 15px;
-}
-
-.dots {
-  margin-top: 20px;
-}
-
-.dot {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin: 5px;
-  background: #bbb;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.dot.active {
-  background: #333;
-}
-
-p {
-  font-size: 18px;
+.footer {
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color:black;
+  font-weight: 500;
+  font-size: 1.1rem;
 }
 ```
 
 ## OUTPUT
+<img width="1377" height="710" alt="image" src="https://github.com/user-attachments/assets/31e62fdf-0325-4f09-b6f5-91aab020e0dc" />
 
-<img width="1226" height="599" alt="image" src="https://github.com/user-attachments/assets/764e5c9f-bd87-4d97-b51c-8d03f278bb3d" />
+<img width="1344" height="721" alt="image" src="https://github.com/user-attachments/assets/ee03dbe6-5c53-4a65-ba79-5e499c551272" />
 
+<img width="1300" height="656" alt="image" src="https://github.com/user-attachments/assets/08cf0da1-d4fe-484d-83cf-bf8b15402fd8" />
 
-<img width="989" height="555" alt="image" src="https://github.com/user-attachments/assets/f7f22a14-624b-48a3-86cf-c5ea698abe2d" />
+<img width="954" height="494" alt="image" src="https://github.com/user-attachments/assets/6d326a27-c71c-4fa8-8817-748e29e8d3df" />
 
-
-
+<img width="1177" height="616" alt="image" src="https://github.com/user-attachments/assets/2752dd75-bac5-4548-a4aa-c5be9a02fbee" />
 
 
 ## RESULT
