@@ -189,10 +189,12 @@ p {
 }
 ```
 
-
-
 ## OUTPUT
 
+<img width="1226" height="599" alt="image" src="https://github.com/user-attachments/assets/764e5c9f-bd87-4d97-b51c-8d03f278bb3d" />
+
+
+<img width="989" height="555" alt="image" src="https://github.com/user-attachments/assets/f7f22a14-624b-48a3-86cf-c5ea698abe2d" />
 
 
 
